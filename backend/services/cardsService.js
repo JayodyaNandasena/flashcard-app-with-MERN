@@ -1,4 +1,6 @@
-const Flashcard = require('../models/Flashcard'); // Import the Flashcard model
+const mongoose = require('mongoose');
+
+const Flashcard = require('../models/Flashcard');
 require('../models/Category'); // register Category model
 require('../models/User');     // register User model
 
@@ -20,8 +22,35 @@ const getById = async (id) => {
     .populate('categoryId');
 };
 
+// Create a new flashcard
+const createCard = async (data) => {
+  return await Flashcard.create({
+    question: data.question,
+    answer: data.answer,
+    categoryId: new mongoose.Types.ObjectId(data.categoryId),
+    userId: new mongoose.Types.ObjectId(data.userId)
+  });
+};
+
+// Update a flashcard
+const updateCard = async (id, data) => {
+  return await Flashcard.findByIdAndUpdate(id, {
+    question: data.question,
+    answer: data.answer,
+    categoryId: new mongoose.Types.ObjectId(data.categoryId)
+  }, { new: true });
+};
+
+// Delete a flashcard
+const deleteCard = async (id) => {
+  return await Flashcard.findByIdAndDelete(id);
+};
+
 module.exports = {
   getAll,
   getByCategory,
-  getById
+  getById,
+  createCard,
+  updateCard,
+  deleteCard
 };
