@@ -3,6 +3,7 @@ require('dotenv').config();
 
 const connectDB = require('./config/db');
 const cardsRouter = require('./routes/cards');
+const authRouter = require('./routes/auth');
 const { errorHandler } = require('./middleware/errorHandler');
 const app = express();
 const port = process.env.PORT || 3000;
@@ -12,6 +13,9 @@ connectDB();
 
 // Middleware to parse JSON bodies
 app.use(express.json());
+
+// handle auth routes
+app.use('/auth', authRouter);
 
 // handle cards routes
 app.use('/cards', cardsRouter);
