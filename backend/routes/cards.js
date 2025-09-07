@@ -1,12 +1,14 @@
 const express = require('express');
 const { getAll, getByCategory, getById, createCard, deleteCard, updateCard } = require('../services/cardsService');
 const { asyncHandler } = require('../middleware/asyncHandler');
+const { validateCreateCard, validateCardIdParam, validateCategoryIdParam, validateUpdateCard } = require('../middleware/validator');
 
 const router = express.Router();
 
 // Create a new card
 router.post(
   '/',
+  validateCreateCard,
   asyncHandler(async (req, res) => {
     const cards = await createCard(req.body);
     res.json(cards);
@@ -25,6 +27,7 @@ router.get(
 // Get cards by category
 router.get(
   '/category/:categoryId',
+  validateCategoryIdParam,
   asyncHandler(async (req, res) => {
     const cards = await getByCategory(req.params.categoryId);
     res.json(cards);
@@ -34,6 +37,7 @@ router.get(
 // Get single card by ID
 router.get(
   '/:id',
+  validateCardIdParam,
   asyncHandler(async (req, res) => {
     const card = await getById(req.params.id);
     if (!card) {
@@ -46,6 +50,8 @@ router.get(
 // Update a card by ID
 router.put(
   '/:id',
+  validateCardIdParam,
+  validateUpdateCard,
   asyncHandler(async (req, res) => {
     const updatedCard = await updateCard(req.params.id, req.body);
     if (!updatedCard) {
@@ -58,6 +64,7 @@ router.put(
 // Delete a card by ID
 router.delete(
   '/:id',
+  validateCardIdParam,
   asyncHandler(async (req, res) => {
     const deletedCard = await deleteCard(req.params.id);
     if (!deletedCard) {
